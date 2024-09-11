@@ -59,6 +59,14 @@ if [[ "$BUILD_DIR" = false ]]; then
 		git config --global user.email "10upbot+github@10up.com"
 		git config --global user.name "10upbot on GitHub"
 
+		# Ensure git archive will pick up any changed files in the directory.
+		# See https://github.com/10up/action-wordpress-plugin-deploy/pull/130
+		test $(git ls-files --deleted) && git rm $(git ls-files --deleted)
+		if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+			git add .
+			git commit -m "Include build step changes"
+		fi
+
 		# If there's no .gitattributes file, write a default one into place
 		if [[ ! -e "$GITHUB_WORKSPACE/.gitattributes" ]]; then
 			cat > "$GITHUB_WORKSPACE/.gitattributes" <<-EOL
