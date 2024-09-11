@@ -51,6 +51,11 @@ if [[ "$BUILD_DIR" = false ]]; then
 		TMP_DIR="${HOME}/archivetmp"
 		mkdir "$TMP_DIR"
 
+		# Workaround for: detected dubious ownership in repository at '/github/workspace' issue.
+		# See: https://github.com/10up/action-wordpress-plugin-deploy/issues/116
+		# Mark github workspace as safe directory.
+		git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
 		git config --global user.email "10upbot+github@10up.com"
 		git config --global user.name "10upbot on GitHub"
 
