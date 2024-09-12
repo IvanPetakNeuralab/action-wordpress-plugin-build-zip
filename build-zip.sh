@@ -51,8 +51,21 @@ if [[ "$BUILD_DIR" = false ]]; then
 		TMP_DIR="${HOME}/archivetmp"
 		mkdir "$TMP_DIR"
 
+		# Workaround for: detected dubious ownership in repository at '/github/workspace' issue.
+		# See: https://github.com/10up/action-wordpress-plugin-deploy/issues/116
+		# Mark github workspace as safe directory.
+		git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
 		git config --global user.email "10upbot+github@10up.com"
 		git config --global user.name "10upbot on GitHub"
+
+		# Ensure git archive will pick up any changed files in the directory.
+		# See https://github.com/10up/action-wordpress-plugin-deploy/pull/130
+		test $(git ls-files --deleted) && git rm $(git ls-files --deleted)
+		if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+			git add .
+			git commit -m "Include build step changes"
+		fi
 
 		# If there's no .gitattributes file, write a default one into place
 		if [[ ! -e "$GITHUB_WORKSPACE/.gitattributes" ]]; then
