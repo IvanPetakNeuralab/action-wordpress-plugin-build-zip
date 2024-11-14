@@ -32,8 +32,6 @@ The recommened approach is to use a `.distignore` file, especially when there ar
 
 #### `.distignore`
 
-**Notes:** `.distignore` is for files to be ignored **only**; it does not currently allow negation like `.gitignore`. This comes from its current expected syntax in WP-CLI's [`wp dist-archive` command](https://github.com/wp-cli/dist-archive-command/). It also will need to contain more than `.gitattributes` because that method **also** respects `.gitignore`.
-
 ```
 /.wordpress-org
 /.git
@@ -86,8 +84,6 @@ jobs:
 
     - name: Generate zip
       uses: 10up/action-wordpress-plugin-build-zip@stable
-      env:
-        SLUG: my-super-cool-plugin # optional, remove if GitHub repo name matches SVN slug, including capitalization
 ```
 
 ### Build zip on demand and keep that for 1 day
