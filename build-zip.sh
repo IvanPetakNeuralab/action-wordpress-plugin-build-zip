@@ -26,7 +26,7 @@ if [[ "$BUILD_DIR" != false ]]; then
 fi
 
 if [[ -z "$SVN" ]]; then
-	SVN=false
+	SVN=true
 fi
 
 if [[ "$SVN" == true ]]; then

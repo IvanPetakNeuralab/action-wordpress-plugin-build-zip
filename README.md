@@ -18,6 +18,7 @@ Recommended to be used in conjunction with our [WordPress.org Plugin Deploy Acti
 
 * `SLUG` - defaults to the repository name, customizable in case your WordPress.org repository has a different slug or is capitalized differently.
 * `BUILD_DIR` - defaults to `false`. Set this flag to the directory where you build your plugins files into, then the action will copy and build the archive from that directory. Both absolute and relative paths are supported. The relative path if provided will be concatenated with the repository root directory. All files and folders in the build directory will be archived, `.distignore` or `.gitattributes` will be ignored.
+* `SVN` - defaults to `true`. Set this to false if no SVN repo exists yet.
 
 ### Inputs
 
