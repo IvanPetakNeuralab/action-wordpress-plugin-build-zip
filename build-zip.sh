@@ -25,21 +25,10 @@ if [[ "$BUILD_DIR" != false ]]; then
 	echo "ℹ︎ BUILD_DIR is $BUILD_DIR"
 fi
 
-if [[ -z "$SVN" ]]; then
-	SVN=true
-fi
-
-if [[ "$SVN" == true ]]; then
-	SVN_URL="https://plugins.svn.wordpress.org/${SLUG}/"
-	SVN_DIR="${HOME}/svn-${SLUG}"
-
-	# Checkout just trunk for efficiency
-	# Tagging will be handled on the SVN level
-	echo "➤ Checking out .org repository..."
-	svn checkout --depth immediates "$SVN_URL" "$SVN_DIR"
-	cd "$SVN_DIR"
-	svn update --set-depth infinity trunk
-fi
+# Create directory where finilized build files will be
+DIST_DIR="${HOME}/dist"
+mkdir "$DIST_DIR"
+cd "$DIST_DIR"
 
 if [[ "$BUILD_DIR" = false ]]; then
 	echo "➤ Copying files..."
@@ -90,13 +79,11 @@ if [[ "$BUILD_DIR" = false ]]; then
 		# This will exclude everything in the .gitattributes file with the export-ignore flag
 		git archive HEAD | tar x --directory="$TMP_DIR"
 
-		if [[ "$SVN" == true ]]; then
-			cd "$SVN_DIR"
+		cd "$DIST_DIR"
 
-			# Copy from clean copy to /trunk, excluding dotorg assets
-			# The --delete flag will delete anything in destination that no longer exists in source
-			rsync -rc "$TMP_DIR/" trunk/ --delete --delete-excluded
-		fi
+		# Copy from clean copy to /trunk, excluding dotorg assets
+		# The --delete flag will delete anything in destination that no longer exists in source
+		rsync -rc "$TMP_DIR/" trunk/ --delete --delete-excluded
 	fi
 else
 	echo "ℹ︎ Copying files from build directory..."
@@ -104,9 +91,7 @@ else
 fi
 
 echo "➤ Generating zip file..."
-if [[ "$SVN" == true ]]; then
-	cd "$SVN_DIR/trunk" || exit
-fi
+cd "$DIST_DIR/trunk" || exit
 zip -r "${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY#*/}.zip" .
 echo "zip-path=${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY#*/}.zip" >> "${GITHUB_OUTPUT}"
 echo "✓ Zip file generated!"

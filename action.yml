@@ -25,6 +25,6 @@ runs:
       id: upload-plugin-artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.repository.name }}
+        name: ${{ github.event.repository.name }}.zip
         path: zipfile
         retention-days: ${{ inputs.retention-days }}
